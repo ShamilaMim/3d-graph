@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Graph Plotter</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        #controls {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input {
+            padding: 5px;
+            width: 250px;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 6px 12px;
+            cursor: pointer;
+            background: #520852;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="controls">
+        <input type="text" id="equation" placeholder="Enter equation, e.g. x*x + y*y">
+        <button onclick="updateGraph()">Update Graph</button>
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+</body>
+</html>
