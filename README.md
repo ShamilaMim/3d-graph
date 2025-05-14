@@ -15,10 +15,22 @@ This project is a simple web-based 3D graph plotter, where users can input a mat
 
 ## 🚀 Live Demo
 
-🔗 *[https://three-d-graph.netlify.app/]*
+🔗 [https://three-d-graph.netlify.app/](https://three-d-graph.netlify.app/)
 
 ---
 
+## 🎥 Demo Video
+
+https://github.com/your-username/3d-graph-threejs/assets/your-demo-video-id/demo.mp4  
+<!-- Or upload to your repo and use a relative link like below -->
+<!-- ![Demo Video](demo.mp4) -->
+
+---
+
+## 🖼️ Screenshot
+
+![3D Graph Screenshot](preview.png)  
+<!-- Replace with your actual image name -->
 
 ---
 
@@ -27,7 +39,6 @@ This project is a simple web-based 3D graph plotter, where users can input a mat
 - [Three.js](https://threejs.org/)
 - Vanilla JavaScript
 - HTML5 & CSS3
-- (Optional) [Math.js](https://mathjs.org/) for parsing equations
 
 ---
 
@@ -36,7 +47,7 @@ This project is a simple web-based 3D graph plotter, where users can input a mat
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/3d-graph-threejs.git
-cd 3d-graph-threejs
-
-
+git clone https://github.com/ShamilaMim/3d-graph.git
+cd 3d-graph
+npm install
+npm run dev
