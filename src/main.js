@@ -16,10 +16,18 @@ document.body.appendChild(renderer.domElement);
 const camera = new THREE.PerspectiveCamera(50, fixedWidth / fixedHeight, 0.1, 1000);
 camera.position.set(20, 15, 20);
 
-// 📌 Grid Helper
-let zoomScale = 5, gridSize = 15;
-let gridHelper = new THREE.GridHelper(gridSize, gridSize);
+// // 📌 Grid Helper
+// let zoomScale = 5, gridSize = 20;
+// let gridHelper = new THREE.GridHelper(gridSize, gridSize);
+// scene.add(gridHelper);
+
+let zoomScale = 5, gridSize = 20;
+let gridColor = 0xff0000;
+let axisColor = 0x00ff00;
+let gridHelper = new THREE.GridHelper(gridSize, gridSize, gridColor, axisColor); 
+// Red center line, green grid lines
 scene.add(gridHelper);
+
 
 // 🖱️ OrbitControls
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -31,29 +39,10 @@ controls.enablePan = false;
 const fontLoader = new FontLoader();
 let axisLabels = [];
 
-fontLoader.load("https://threejs.org/examples/fonts/helvetiker_regular.typeface.json", (font) => {
-    addAxisLabels(font);
-});
+// fontLoader.load("https://threejs.org/examples/fonts/helvetiker_regular.typeface.json", (font) => {
+//     addAxisLabels(font);
+// });
 
-// ✍️ Add Axis Labels
-// function addAxisLabels(font) {
-//     const labelData = [
-//         { text: "X", color: 0xff0000 },
-//         { text: "Z", color: 0x00ff00 },
-//         { text: "Y", color: 0x0000ff },
-//     ];
-
-//     labelData.forEach(({ text, color }) => {
-//         const textMesh = new THREE.Mesh(
-//             new TextGeometry(text, { font, size: 1, height: 0.1 }),
-//             new THREE.MeshBasicMaterial({ color })
-//         );
-//         scene.add(textMesh);
-//         axisLabels.push(textMesh);
-//     });
-
-//     // updateLabelPositions();
-// }
 window.addEventListener("wheel", (event) => {
     event.preventDefault();
     zoomScale *= event.deltaY > 0 ? 1.1 : 0.9;
@@ -61,7 +50,7 @@ window.addEventListener("wheel", (event) => {
 
     // 🔄 Update Grid (Keep size fixed, change divisions)
     scene.remove(gridHelper);
-    gridHelper = new THREE.GridHelper(15, Math.round(15 / zoomScale) * 10);
+    gridHelper = new THREE.GridHelper(15, Math.round(15 / zoomScale) * 10,gridColor,axisColor);
     scene.add(gridHelper);
 
     // 🔄 Scale Surface Mesh (Only when zoomScale is within range)
@@ -73,8 +62,6 @@ window.addEventListener("wheel", (event) => {
     // 🔄 Update Graph & Labels
     updateGraph();
 }, { passive: false });
-
-
 
 
 
@@ -110,9 +97,9 @@ let surfaceMesh = null;
 // ✅ Convert math symbols (e.g., x^2 → Math.pow(x,2), root(x) → Math.sqrt(x))
 function parseEquation(equation) {
     return equation
-    .replace(/\^(\d+)/g, "Math.pow($1)")
-    .replace(/root\((.*?)\)/g, "Math.sqrt($1)")
-    .replace(/\b(sin|cos|tan|exp|log|sqrt|abs|round|floor|ceil)\b/g, "Math.$1");
+        .replace(/\^(\d+)/g, "Math.pow($1)")
+        .replace(/root\((.*?)\)/g, "Math.sqrt($1)")
+        .replace(/\b(sin|cos|tan|exp|log|sqrt|abs|round|floor|ceil)\b/g, "Math.$1");
 }
 
 // ✅ Safe Function Evaluation
@@ -178,7 +165,11 @@ function createSurface(equation, size = zoomScale, resolution = 50) {
 
 // ✅ Update Graph on Button Click
 window.updateGraph = function () {
-    const rawEquation = document.getElementById("equation")?.value || "Math.sin(x*y) * 2";
+    const rawEquation = document.getElementById("equation").value;
+
+    // ✅ Skip drawing if input is empty
+    if (!rawEquation) return;
+
     const parsedEquation = parseEquation(rawEquation);
     createSurface(parsedEquation);
 };
