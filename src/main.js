@@ -4,7 +4,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 
-// 🎯 Scene, Camera & Renderer
+// Scene, Camera & Renderer
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xffffff);
 
@@ -16,26 +16,26 @@ document.body.appendChild(renderer.domElement);
 const camera = new THREE.PerspectiveCamera(50, fixedWidth / fixedHeight, 0.1, 1000);
 camera.position.set(20, 15, 20);
 
-// // 📌 Grid Helper
+// //  Grid Helper
 // let zoomScale = 5, gridSize = 20;
 // let gridHelper = new THREE.GridHelper(gridSize, gridSize);
 // scene.add(gridHelper);
 
 let zoomScale = 5, gridSize = 20;
 let gridColor = 0xff0000;
-let axisColor = 0x00ff00;
+let axisColor = "gray";
 let gridHelper = new THREE.GridHelper(gridSize, gridSize, gridColor, axisColor); 
 // Red center line, green grid lines
 scene.add(gridHelper);
 
 
-// 🖱️ OrbitControls
+// OrbitControls
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.enableZoom = false;
 controls.enablePan = false;
 
-// ✏️ Load Font for Axis Labels
+//  Load Font for Axis Labels
 const fontLoader = new FontLoader();
 let axisLabels = [];
 
@@ -48,18 +48,18 @@ window.addEventListener("wheel", (event) => {
     zoomScale *= event.deltaY > 0 ? 1.1 : 0.9;
     zoomScale = Math.max(2, Math.min(40, zoomScale));
 
-    // 🔄 Update Grid (Keep size fixed, change divisions)
+    // Update Grid (Keep size fixed, change divisions)
     scene.remove(gridHelper);
     gridHelper = new THREE.GridHelper(15, Math.round(15 / zoomScale) * 10,gridColor,axisColor);
     scene.add(gridHelper);
 
-    // 🔄 Scale Surface Mesh (Only when zoomScale is within range)
+    // Scale Surface Mesh (Only when zoomScale is within range)
     if (zoomScale > 2 && zoomScale < 40 && surfaceMesh) {
         // surfaceMesh.scale.set(zoomScale / 5, zoomScale / 5, zoomScale / 5);
         updateGraph();
     }
 
-    // 🔄 Update Graph & Labels
+    //  Update Graph & Labels
     updateGraph();
 }, { passive: false });
 
@@ -70,18 +70,18 @@ window.addEventListener("wheel", (event) => {
 //     zoomScale *= event.deltaY > 0 ? 1.1 : 0.9;
 //     zoomScale = Math.max(2, Math.min(50, zoomScale));
 
-//     // 🔄 Update Grid
+//     //  Update Grid
 //     scene.remove(gridHelper);
 //     gridHelper = new THREE.GridHelper(15, Math.round(15 / zoomScale) * 10); // 15 ফিক্সড, কিন্তু divisions বদলাবে
 //     scene.add(gridHelper);
 
-//     // 🔄 Update Graph & Labels
+//     //  Update Graph & Labels
 //     updateGraph();
 //     updateLabelPositions();
 // }, { passive: false });
 
 
-// 🏷️ Update Label Positions
+//  Update Label Positions
 function updateLabelPositions() {
     if (axisLabels.length === 3) {
         const labelOffset = gridSize * 0.55;
@@ -91,10 +91,10 @@ function updateLabelPositions() {
     }
 }
 
-// 🟢 Mesh Variables
+//  Mesh Variables
 let surfaceMesh = null;
 
-// ✅ Convert math symbols (e.g., x^2 → Math.pow(x,2), root(x) → Math.sqrt(x))
+//  Convert math symbols (e.g., x^2 → Math.pow(x,2), root(x) → Math.sqrt(x))
 function parseEquation(equation) {
     return equation
         .replace(/\^(\d+)/g, "Math.pow($1)")
@@ -102,7 +102,7 @@ function parseEquation(equation) {
         .replace(/\b(sin|cos|tan|exp|log|sqrt|abs|round|floor|ceil)\b/g, "Math.$1");
 }
 
-// ✅ Safe Function Evaluation
+// Safe Function Evaluation
 function safeEvalEquation(equation, x, y) {
     try {
         return new Function("x", "y", `return ${equation}`)(x, y);
@@ -112,7 +112,7 @@ function safeEvalEquation(equation, x, y) {
     }
 }
 
-// 🎨 Create a 3D Surface Mesh from an Equation
+//  Create a 3D Surface Mesh from an Equation
 function createSurface(equation, size = zoomScale, resolution = 50) {
     if (surfaceMesh) scene.remove(surfaceMesh);
 
@@ -122,7 +122,7 @@ function createSurface(equation, size = zoomScale, resolution = 50) {
 
     const step = size / resolution;
 
-    // 🟢 Generate Grid Vertices
+    // Generate Grid Vertices
     for (let i = 0; i <= resolution; i++) {
         for (let j = 0; j <= resolution; j++) {
             let x = -size / 2 + i * step;
@@ -132,7 +132,7 @@ function createSurface(equation, size = zoomScale, resolution = 50) {
         }
     }
 
-    // 🔺 Create Triangles (Faces)
+    //  Create Triangles (Faces)
     for (let i = 0; i < resolution; i++) {
         for (let j = 0; j < resolution; j++) {
             let a = i * (resolution + 1) + j;
@@ -145,12 +145,12 @@ function createSurface(equation, size = zoomScale, resolution = 50) {
         }
     }
 
-    // 🔹 Assign vertices & indices
+    //  Assign vertices & indices
     geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
     geometry.setIndex(indices);
     geometry.computeVertexNormals();
 
-    // 🎨 Material & Mesh (With Bright Effect)
+    //  Material & Mesh (With Bright Effect)
     const material = new THREE.MeshStandardMaterial({
         color: "purple",
         emissive: "purple",
@@ -163,18 +163,18 @@ function createSurface(equation, size = zoomScale, resolution = 50) {
     scene.add(surfaceMesh);
 }
 
-// ✅ Update Graph on Button Click
+//  Update Graph on Button Click
 window.updateGraph = function () {
     const rawEquation = document.getElementById("equation").value;
 
-    // ✅ Skip drawing if input is empty
+    // Skip drawing if input is empty
     if (!rawEquation) return;
 
     const parsedEquation = parseEquation(rawEquation);
     createSurface(parsedEquation);
 };
 
-// 💡 Lighting Setup
+//  Lighting Setup
 const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
 scene.add(ambientLight);
 
@@ -182,7 +182,7 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
 directionalLight.position.set(5, 10, 7);
 scene.add(directionalLight);
 
-// 🔄 Animation Loop
+//  Animation Loop
 function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
